@@ -58,10 +58,10 @@ public class ChatServerManager implements ChatServerManagerInterface
 		// create stub
 		try
 			{
-			ChatServerManagerInterface stub = (ChatServerManagerInterface)UnicastRemoteObject.exportObject(
+			ChatServerManagerInterface skeleton = (ChatServerManagerInterface)UnicastRemoteObject.exportObject(
 					this, 0);
 			registry = LocateRegistry.getRegistry();
-			registry.rebind("ChatServerManager", stub);
+			registry.rebind("ChatServerManager", skeleton);
 			}
 		catch (RemoteException e)
 			{
@@ -120,7 +120,7 @@ public class ChatServerManager implements ChatServerManagerInterface
 		{
 		try
 			{
-			LocateRegistry.createRegistry(1099);
+			LocateRegistry.createRegistry(1098);
 			}
 		catch (RemoteException e)
 			{

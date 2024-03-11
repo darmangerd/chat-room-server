@@ -1,6 +1,7 @@
 package os.chat.client;
 
 import os.chat.server.ChatServer;
+import os.chat.server.ChatServerInterface;
 import os.chat.server.ChatServerManager;
 import os.chat.server.ChatServerManagerInterface;
 
@@ -8,6 +9,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -24,6 +27,10 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer
 	 * The name of the user of this client
 	 */
 	private String userName;
+
+	//Q2
+	private CommandsFromServer skeleton;
+	private HashMap<String, ChatServerInterface> myRooms;
 
 	/**
 	 * The graphical user interface, accessed through its interface. In return,
@@ -66,6 +73,16 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer
 			{
 			System.out.println("can not lookup for ChatServerManager");
 			e.printStackTrace();
+			}
+
+		try
+			{
+			skeleton = (CommandsFromServer) UnicastRemoteObject.exportObject(
+					this, 0);
+
+			}
+		catch (RemoteException e)
+			{
 			}
 		}
 
@@ -133,6 +150,29 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer
 	 */
 	public boolean joinChatRoom(String roomName)
 		{
+		try
+			{
+			myRooms.put(roomName, (ChatServerInterface) registry.lookup("room_" + roomName));
+
+			//ChatServerInterface server = (ChatServerInterface) registry.lookup("room_" + roomName);
+			// chatServer.put(roomName, server);
+			//server.register(skeleton);
+			return true;
+			}
+		catch (RemoteException e)
+			{
+			return false;
+			}
+
+		try
+			{
+			myRooms.get(roomName).register(skeleton);
+			}
+		catch (RemoteException e)
+			{
+			return false;
+			}
+
 
 		System.err.println("TODO: joinChatRoom is not implemented.");
 
