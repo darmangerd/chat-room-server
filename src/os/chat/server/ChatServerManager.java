@@ -120,7 +120,7 @@ public class ChatServerManager implements ChatServerManagerInterface
 		{
 		try
 			{
-			LocateRegistry.createRegistry(1098);
+			LocateRegistry.createRegistry(1099);
 			}
 		catch (RemoteException e)
 			{

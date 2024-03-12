@@ -32,7 +32,7 @@ public class ChatServer implements ChatServerInterface
 	public ChatServer(String roomName)
 		{
 		this.roomName = roomName;
-		registeredClients = new Vector<CommandsFromServer>();
+		registeredClients = new Vector< CommandsFromServer >();
 
 		/*
 		 * TODO register the ChatServer to the RMI registry
@@ -41,10 +41,11 @@ public class ChatServer implements ChatServerInterface
 		//the ChatServer object must bind itself to the RMI registry using the name “room NAME” where “NAME” is the name of the room.
 		try
 			{
-			ChatServerInterface skeleton = (ChatServerInterface)UnicastRemoteObject.exportObject(
+				Registry registry = LocateRegistry.getRegistry();
+				ChatServerInterface skeleton = (ChatServerInterface)UnicastRemoteObject.exportObject(
 					this, 0);
-			Registry registry = LocateRegistry.getRegistry();
-			registry.rebind("room_" + roomName, skeleton);
+
+				registry.rebind("room_" + roomName, skeleton);
 			// register client
 			}
 		catch (Exception e)
@@ -79,9 +80,10 @@ public class ChatServer implements ChatServerInterface
 	 */
 	public void register(CommandsFromServer client)
 		{
+
+		this.registeredClients.add(client);
 		//print console message
 		System.out.println("client " + client + " has been registered to the chat room " + roomName);
-		this.registeredClients.add(client);
 
 
 		//System.err.println("TODO: register is not implemented");

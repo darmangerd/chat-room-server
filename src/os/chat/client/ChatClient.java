@@ -5,6 +5,7 @@ import os.chat.server.ChatServerInterface;
 import os.chat.server.ChatServerManager;
 import os.chat.server.ChatServerManagerInterface;
 
+import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -12,6 +13,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Vector;
+import java.net.Inet4Address;
 
 /**
  * This class implements a chat client that can be run locally or remotely to
@@ -47,11 +49,10 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer
 	 * @param userName the name of the user for this client
 	 * @since Q1
 	 */
-	public ChatClient(CommandsToWindow window, String userName)
-		{
+	public ChatClient(CommandsToWindow window, String userName) {
 		this.window = window;
 		this.userName = userName;
-
+		myRooms = new HashMap<String, ChatServerInterface>();
 		//System.err.println("TODO: implement ChatClient constructor and connection to the server");
 
 		/*
@@ -60,7 +61,7 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer
 
 		try
 			{
-			registry = LocateRegistry.getRegistry();
+			registry = LocateRegistry.getRegistry(1099);
 			csm = (ChatServerManagerInterface)registry.lookup("ChatServerManager");
 
 			}
@@ -152,22 +153,18 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer
 		{
 		try
 			{
-			myRooms.put(roomName, (ChatServerInterface) registry.lookup("room_" + roomName));
-
+				myRooms.put(roomName, (ChatServerInterface) registry.lookup("room_" + roomName));
+				myRooms.get(roomName).register(skeleton);
 			//ChatServerInterface server = (ChatServerInterface) registry.lookup("room_" + roomName);
 			// chatServer.put(roomName, server);
 			//server.register(skeleton);
 			return true;
 			}
-		catch (RemoteException e)
-			{
-			return false;
-			}
-
-		try
-			{
-			myRooms.get(roomName).register(skeleton);
-			}
+		catch (NotBoundException e)
+		{
+			System.out.println("can not lookup for room");
+			e.printStackTrace();
+		}
 		catch (RemoteException e)
 			{
 			return false;
@@ -194,7 +191,18 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer
 	 */
 	public boolean leaveChatRoom(String roomName)
 		{
-
+			try {
+				myRooms.remove(roomName);
+				ChatServerInterface chatServer = (ChatServerInterface) registry.lookup("room_" + roomName);
+				chatServer.unregister(skeleton);
+				return true;
+			} catch (NotBoundException e) {
+				System.out.println("Cannot lookup for room");
+				e.printStackTrace();
+			} catch (RemoteException e) {
+				System.err.println("Error occurred while leaving chat room: " + e.getMessage());
+				e.printStackTrace();
+			}
 		System.err.println("TODO: leaveChatRoom is not implemented.");
 
 		/*
@@ -213,6 +221,7 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer
 	 */
 	public boolean createNewRoom(String roomName)
 		{
+
 
 		System.err.println("TODO: createNewRoom is not implemented.");
 
