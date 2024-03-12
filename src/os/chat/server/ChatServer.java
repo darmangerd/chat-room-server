@@ -65,6 +65,9 @@ public class ChatServer implements ChatServerInterface
 	 */
 	public void publish(String message, String publisher)
 		{
+			// print users list name (debug)
+			System.out.println("  length of registered clients: " + registeredClients.size());
+
 			// we iterate over the registered clients and send the message to each of them
 			for (CommandsFromServer client: registeredClients)
 			{
@@ -75,11 +78,22 @@ public class ChatServer implements ChatServerInterface
 				}
 				catch (RemoteException e)
 				{
-					System.out.println("error: can not send message to client " + client);
-					e.printStackTrace();
+					// Q5
+					// remove the client from the list of registered clients (fault tolerance)
+					if (registeredClients.contains(client))
+					{
+						registeredClients.remove(client);
+					}
+					else
+					{
+						System.out.println("error: can not send message to client " + client);
+						e.printStackTrace();
+					}
 				}
-
 			}
+
+			// check if user has been removed
+			System.out.println("  length of registered clients: " + registeredClients.size());
 
 
 		/*
