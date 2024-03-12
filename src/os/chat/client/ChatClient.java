@@ -94,8 +94,12 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
      */
     public void sendText(String roomName, String message) {
 
-        System.err.println("TODO: sendText is not implemented.");
-
+        try {
+            myRooms.get(roomName).publish(message, userName);
+        } catch (RemoteException e) {
+            System.out.println("can not call ChatServerInterface.publish()");
+            e.printStackTrace();
+        }
         /*
          * TODO implement the method to send the message to the server.
          */
@@ -154,7 +158,7 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
         }
 
 
-        System.err.println("TODO: joinChatRoom is not implemented.");
+        //System.err.println("TODO: joinChatRoom is not implemented.");
 
         /*
          * TODO implement the method to join a chat room and receive notifications of new messages.
@@ -185,7 +189,7 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
             System.err.println("Error occurred while leaving chat room: " + e.getMessage());
             e.printStackTrace();
         }
-        System.err.println("TODO: leaveChatRoom is not implemented.");
+        //System.err.println("TODO: leaveChatRoom is not implemented.");
 
         /*
          * TODO implement the method to leave a chat room and stop receiving notifications of new messages.
@@ -232,7 +236,9 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
      */
     public void receiveMsg(String roomName, String message) {
 
-        System.err.println("TODO: getName is not implemented.");
+        window.publish(roomName, message);
+
+        //System.err.println("TODO: getName is not implemented.");
         /*
          * TODO implement the method to allow server to publish message for client.
          */

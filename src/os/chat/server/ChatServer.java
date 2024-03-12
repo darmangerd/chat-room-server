@@ -2,6 +2,7 @@ package os.chat.server;
 
 import os.chat.client.CommandsFromServer;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -64,8 +65,22 @@ public class ChatServer implements ChatServerInterface
 	 */
 	public void publish(String message, String publisher)
 		{
+			// we iterate over the registered clients and send the message to each of them
+			for (CommandsFromServer client: registeredClients)
+			{
+				try
+				{
+					client.receiveMsg(roomName, publisher + ": " + message);
+					System.out.println("  [server] publishing '" + message + "' from '" + publisher + "'");
+				}
+				catch (RemoteException e)
+				{
+					System.out.println("error: can not send message to client " + client);
+					e.printStackTrace();
+				}
 
-		System.err.println("TODO: publish is not implemented");
+			}
+
 
 		/*
 		 * TODO send the message to all registered clients
