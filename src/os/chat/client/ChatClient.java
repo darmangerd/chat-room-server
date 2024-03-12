@@ -115,6 +115,8 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
      */
     public Vector<String> getChatRoomsList() {
 
+
+
         //System.err.println("TODO: getChatRoomsList is not implemented.");
 
         /*
@@ -207,8 +209,27 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
      */
     public boolean createNewRoom(String roomName) {
 
+        //implement the method to ask the server to create a new room (second part of the assignment only).
+        try {
+            if (csm.createRoom(roomName)) {
+                //TODO USE THIS
+                //this.joinChatRoom(roomName);
 
-        System.err.println("TODO: createNewRoom is not implemented.");
+                // here we need to register the client to the room we just created
+                myRooms.put(roomName, (ChatServerInterface) registry.lookup("room_" + roomName));
+                //myRooms.get(roomName).register(skeleton);
+                return true;
+            }
+        } catch (RemoteException e) {
+            System.out.println("can not call ChatServerManagerInterface.createRoom()");
+            e.printStackTrace();
+        }
+        catch (NotBoundException e) {
+            System.out.println("can not lookup for room");
+            e.printStackTrace();
+        }
+
+        //System.err.println("TODO: createNewRoom is not implemented.");
 
         /*
          * TODO implement the method to ask the server to create a new room (second part of the assignment only).

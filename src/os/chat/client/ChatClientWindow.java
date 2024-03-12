@@ -280,6 +280,9 @@ public class ChatClientWindow implements CommandsToWindow {
 					if (!success) {
 						JOptionPane.showMessageDialog(frmChatClient, "Creating Chat room "+roomName+" was not successful.", "Error message", JOptionPane.ERROR_MESSAGE);
 					}
+
+					// call getRoomList to refresh the list
+					btnGetRoomList.doClick();
 				}
 			}
 		});

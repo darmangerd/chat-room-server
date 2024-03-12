@@ -106,14 +106,30 @@ public class ChatServerManager implements ChatServerManagerInterface
 	 */
 	public boolean createRoom(String roomName)
 		{
+			//TODO COMMENT
+			// add the code to create a new room
 
-		System.err.println("server manager method createRoom not implemented.");
+			try {
+				if (chatRoomsList.contains(roomName)) {
+					System.out.println("room already exists");
+					return false;
+				}
+				ChatServer newRoom = new ChatServer(roomName);
+				chatRooms.add(newRoom);
+				chatRoomsList.add(roomName);
+
+				return true;
+
+			} catch (Exception e) {
+				System.out.println("can not create new room");
+				e.printStackTrace();
+				return false;
+			}
 
 		/*
 		 * TODO add the code to create a new room
 		 */
 
-		return false;
 		}
 
 	public static void main(String[] args)
