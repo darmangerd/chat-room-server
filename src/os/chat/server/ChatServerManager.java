@@ -28,7 +28,7 @@ public class ChatServerManager implements ChatServerManagerInterface
 
 	private Vector<ChatServer> chatRooms;
 
-	//COMMENT
+	// add the registry
 	private Registry registry;
 
 	private static ChatServerManager instance = null;
@@ -50,12 +50,8 @@ public class ChatServerManager implements ChatServerManagerInterface
 		chatRooms.add(new ChatServer("sports"));
 		chatRoomsList.add("sports");
 
-		/*
-		 * TODO register the server manager object as a "ChatServerManager" on the RMI registry
-		 * so it can be called by clients.
-		 */
-
-		// create stub
+		//Q1
+		// create a stub/skeleton for the ChatServerManager
 		try
 			{
 			ChatServerManagerInterface skeleton = (ChatServerManagerInterface)UnicastRemoteObject.exportObject(
@@ -69,7 +65,6 @@ public class ChatServerManager implements ChatServerManagerInterface
 			e.printStackTrace();
 			}
 		System.out.println("ChatServerManager was created");
-
 		}
 
 	/**
@@ -106,34 +101,31 @@ public class ChatServerManager implements ChatServerManagerInterface
 	 */
 	public boolean createRoom(String roomName)
 		{
-			//TODO COMMENT
-			// add the code to create a new room
+			//Q4
+			// method to create a new room
 
 			try {
+				// check if the room already exists
 				if (chatRoomsList.contains(roomName)) {
 					System.out.println("room already exists");
 					return false;
 				}
+				// create a new room and add it to the list of chat rooms
 				ChatServer newRoom = new ChatServer(roomName);
 				chatRooms.add(newRoom);
 				chatRoomsList.add(roomName);
-
 				return true;
-
 			} catch (Exception e) {
 				System.out.println("can not create new room");
 				e.printStackTrace();
 				return false;
 			}
-
-		/*
-		 * TODO add the code to create a new room
-		 */
-
 		}
 
 	public static void main(String[] args)
 		{
+			//Q1
+			// create the registry
 		try
 			{
 			LocateRegistry.createRegistry(1099);

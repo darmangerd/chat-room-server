@@ -35,19 +35,16 @@ public class ChatServer implements ChatServerInterface
 		this.roomName = roomName;
 		registeredClients = new Vector< CommandsFromServer >();
 
-		/*
-		 * TODO register the ChatServer to the RMI registry
-		 */
-		// register the ChatServer to the RMI registry
-		//the ChatServer object must bind itself to the RMI registry using the name “room NAME” where “NAME” is the name of the room.
+		//Q2
+		// bind the chat server to the RMI registry
 		try
 			{
+				// retrieve the RMI registry and add the skeleton to it
 				Registry registry = LocateRegistry.getRegistry("localhost", 1099);
 				ChatServerInterface skeleton = (ChatServerInterface)UnicastRemoteObject.exportObject(
 					this, 0);
 
 				registry.rebind("room_" + roomName, skeleton);
-			// register client
 			}
 		catch (Exception e)
 			{
@@ -65,9 +62,8 @@ public class ChatServer implements ChatServerInterface
 	 */
 	public void publish(String message, String publisher)
 		{
-			// print users list name (debug)
-			//TODO DELETE THIS DEBUT
-			System.out.println("length of registered client (start) : " + registeredClients.size());
+			//Q3
+			// method to send the message to all registered clients
 
 			// we iterate over the registered clients and send the message to each of them
 			for (CommandsFromServer client: registeredClients)
@@ -79,7 +75,7 @@ public class ChatServer implements ChatServerInterface
 				}
 				catch (RemoteException e)
 				{
-					// Q5
+					//Q5
 					// remove the client from the list of registered clients (fault tolerance)
 					if (registeredClients.contains(client))
 					{
@@ -92,15 +88,6 @@ public class ChatServer implements ChatServerInterface
 					}
 				}
 			}
-
-			// check if user has been removed
-			//TODO DELETE THIS DEBUT
-			System.out.println("  length of registered clients (after) : " + registeredClients.size());
-
-
-		/*
-		 * TODO send the message to all registered clients
-		 */
 		}
 
 	/**
@@ -111,17 +98,9 @@ public class ChatServer implements ChatServerInterface
 	 */
 	public void register(CommandsFromServer client)
 		{
-
 		this.registeredClients.add(client);
 		//print console message
 		System.out.println("client " + client + " has been registered to the chat room " + roomName);
-
-
-		//System.err.println("TODO: register is not implemented");
-
-		/*
-		 * TODO register the client
-		 */
 		}
 
 	/**
@@ -134,16 +113,10 @@ public class ChatServer implements ChatServerInterface
 		{
 		this.registeredClients.remove(client);
 		System.out.println("client " + client + " has been unregister to the chat room " + roomName);
-
-		//System.err.println("TODO: unregister is not implemented");
-
-		/*
-		 * TODO unregister the client
-		 */
 		}
 
 	public static void main(String[] args)
 		{
-
+			// empty main method
 		}
 	}

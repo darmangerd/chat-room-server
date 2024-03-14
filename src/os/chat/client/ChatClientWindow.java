@@ -89,11 +89,16 @@ public class ChatClientWindow implements CommandsToWindow {
                 null,null,
                 "");
 
-
+		//Q6
 		try
 		{
-			// create the client object (with IP)
-			client = new ChatClient(this, userName, Inet4Address.getLocalHost().getHostAddress());
+			// the server IP address
+			String serverIP = "172.20.10.4";
+			// local host to test on the same machine
+			// String serverIP = Inet4Address.getLocalHost().getHostAddress();
+
+			// create the client object with the user name and the server IP
+			client = new ChatClient(this, userName, serverIP);
 		}
 		catch (Exception e)
 		{
