@@ -22,6 +22,7 @@ import javax.swing.ListSelectionModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Inet4Address;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class ChatClientWindow implements CommandsToWindow {
 	// map of String (room names) to the tabs.
 	private final Map<String, JScrollPane> chats;
 	
-	private final CommandsFromWindow client;
+	private CommandsFromWindow client;
 	
 	/**
 	 * Launch the application. This is the main point of entry of the application
@@ -87,8 +88,18 @@ public class ChatClientWindow implements CommandsToWindow {
                 JOptionPane.PLAIN_MESSAGE,
                 null,null,
                 "");
-		
-		client = new ChatClient(this, userName);
+
+
+		try
+		{
+			// create the client object (with IP)
+			client = new ChatClient(this, userName, Inet4Address.getLocalHost().getHostAddress());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("Error creating the ChatClient object");
+		}
 				
 		System.out.println("Initializing the ChatClient Window ...");
 		

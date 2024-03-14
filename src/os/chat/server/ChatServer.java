@@ -42,7 +42,7 @@ public class ChatServer implements ChatServerInterface
 		//the ChatServer object must bind itself to the RMI registry using the name “room NAME” where “NAME” is the name of the room.
 		try
 			{
-				Registry registry = LocateRegistry.getRegistry();
+				Registry registry = LocateRegistry.getRegistry("localhost", 1099);
 				ChatServerInterface skeleton = (ChatServerInterface)UnicastRemoteObject.exportObject(
 					this, 0);
 
@@ -66,7 +66,8 @@ public class ChatServer implements ChatServerInterface
 	public void publish(String message, String publisher)
 		{
 			// print users list name (debug)
-			System.out.println("  length of registered clients: " + registeredClients.size());
+			//TODO DELETE THIS DEBUT
+			System.out.println("length of registered client (start) : " + registeredClients.size());
 
 			// we iterate over the registered clients and send the message to each of them
 			for (CommandsFromServer client: registeredClients)
@@ -93,7 +94,8 @@ public class ChatServer implements ChatServerInterface
 			}
 
 			// check if user has been removed
-			System.out.println("  length of registered clients: " + registeredClients.size());
+			//TODO DELETE THIS DEBUT
+			System.out.println("  length of registered clients (after) : " + registeredClients.size());
 
 
 		/*

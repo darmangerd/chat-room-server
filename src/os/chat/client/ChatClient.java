@@ -4,6 +4,7 @@ import os.chat.server.ChatServer;
 import os.chat.server.ChatServerInterface;
 import os.chat.server.ChatServerManagerInterface;
 
+import java.net.Inet4Address;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -29,6 +30,7 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
     //Q2
     private CommandsFromServer skeleton;
     private HashMap<String, ChatServerInterface> myRooms;
+    private String ip;
 
     /**
      * The graphical user interface, accessed through its interface. In return,
@@ -45,19 +47,13 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
      * @param userName the name of the user for this client
      * @since Q1
      */
-    public ChatClient(CommandsToWindow window, String userName) {
+    public ChatClient(CommandsToWindow window, String userName, String ip) {
         this.window = window;
         this.userName = userName;
         myRooms = new HashMap<String, ChatServerInterface>();
-        // TODO this.ip = Inet4Address.getLocalHost().getAddress();
 
-        //System.err.println("TODO: implement ChatClient constructor and connection to the server");
-
-        /*
-         * TODO implement constructor
-         */
-
-        try {
+        // Q6
+        /*try {
             //TODO VERIF
             registry = LocateRegistry.getRegistry(1099);
             skeleton = (CommandsFromServer) UnicastRemoteObject.exportObject(this, 0);
@@ -68,6 +64,23 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
             e.printStackTrace();
         } catch (NotBoundException e) {
             System.out.println("can not lookup for ChatServerManager");
+            e.printStackTrace();
+        }*/
+
+        try {
+            this.ip = Inet4Address.getLocalHost().getHostAddress();
+            registry = LocateRegistry.getRegistry(ip, 1099);
+            skeleton = (CommandsFromServer) UnicastRemoteObject.exportObject(this, 0);
+            csm = (ChatServerManagerInterface) registry.lookup("ChatServerManager");
+
+        } catch (RemoteException e) {
+            System.out.println("can not locate registry");
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            System.out.println("can not lookup for ChatServerManager");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("can not get local ip");
             e.printStackTrace();
         }
 
