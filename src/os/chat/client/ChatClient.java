@@ -11,6 +11,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -32,12 +33,54 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
     private HashMap<String, ChatServerInterface> myRooms;
     private String ip;
 
+    private Vector<String> messageBuffer = new Vector<>();
+
     /**
      * The graphical user interface, accessed through its interface. In return,
      * the GUI will use the CommandsFromWindow interface to call methods to the
      * ChatClient implementation.
      */
     private final CommandsToWindow window;
+
+
+    private void reconnect(String roomName){
+        boolean connected = false;
+
+        while(!connected){
+            try {
+                // try to reconnect
+                try {
+                    this.ip = Inet4Address.getLocalHost().getHostAddress(); // Q6
+                    // we get the registry and the skeleton for the client
+                    registry = LocateRegistry.getRegistry(ip, 1099);
+                    csm = (ChatServerManagerInterface) registry.lookup("ChatServerManager");
+                } catch (RemoteException e) {
+                    System.out.println("can not locate registry");
+                    e.printStackTrace();
+                } catch (NotBoundException e) {
+                    System.out.println("can not lookup for ChatServerManager");
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    System.out.println("can not get local ip");
+                    e.printStackTrace();
+                }
+                connected = true;
+                System.out.println("Reconnected to the server.");
+                // resend the message if there is any
+                for (String m : messageBuffer) {
+                    myRooms.get(roomName).publish(m, userName);
+                }
+                // clear after resending all the message
+                messageBuffer.clear();
+
+            }
+            catch (Exception e)
+            {
+                System.out.println("Reconnection failed, retrying...");
+            }
+        }
+    }
+
 
     /**
      * Constructor for the <code>ChatClient</code>. Must perform the connection to the
@@ -52,7 +95,7 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
         this.userName = userName;
         myRooms = new HashMap<String, ChatServerInterface>();
 
-        //Q1, Q2, Q6
+        //Q1, Q2, Q6, Q8
         // instantiate the skeleton and register it to the RMI registry
         try {
             this.ip = Inet4Address.getLocalHost().getHostAddress(); // Q6
@@ -60,7 +103,6 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
             registry = LocateRegistry.getRegistry(ip, 1099);
             skeleton = (CommandsFromServer) UnicastRemoteObject.exportObject(this, 0);
             csm = (ChatServerManagerInterface) registry.lookup("ChatServerManager");
-
         } catch (RemoteException e) {
             System.out.println("can not locate registry");
             e.printStackTrace();
@@ -94,7 +136,11 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
             myRooms.get(roomName).publish(message, userName);
         } catch (RemoteException e) {
             System.out.println("can not call ChatServerInterface.publish()");
-            e.printStackTrace();
+            // Q8
+            // buffer the message
+            messageBuffer.add(message);
+            // attempt to reconnect to the server and send message
+            reconnect(roomName);
         }
     }
 

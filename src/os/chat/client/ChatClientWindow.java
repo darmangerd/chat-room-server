@@ -93,9 +93,9 @@ public class ChatClientWindow implements CommandsToWindow {
 		try
 		{
 			// the server IP address
-			String serverIP = "172.20.10.4";
+			//String serverIP = "172.20.10.4";
 			// local host to test on the same machine
-			// String serverIP = Inet4Address.getLocalHost().getHostAddress();
+			 String serverIP = Inet4Address.getLocalHost().getHostAddress();
 
 			// create the client object with the user name and the server IP
 			client = new ChatClient(this, userName, serverIP);
