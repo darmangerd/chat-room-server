@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -33,7 +34,7 @@ public class ChatServer implements ChatServerInterface
 	public ChatServer(String roomName)
 		{
 		this.roomName = roomName;
-		registeredClients = new Vector< CommandsFromServer >();
+		this.registeredClients = new Vector< CommandsFromServer >();
 
 		//Q2
 		// bind the chat server to the RMI registry
@@ -64,10 +65,12 @@ public class ChatServer implements ChatServerInterface
 		{
 			//Q3
 			// method to send the message to all registered clients
+			System.out.println("Length before :  "+ registeredClients.size());
 
-			// we iterate over the registered clients and send the message to each of them
-			for (CommandsFromServer client: registeredClients)
-			{
+			//Q5
+			Iterator<CommandsFromServer> iterator = registeredClients.iterator();
+			while(iterator.hasNext()){
+				CommandsFromServer client = iterator.next();
 				try
 				{
 					client.receiveMsg(roomName, publisher + ": " + message);
@@ -75,19 +78,11 @@ public class ChatServer implements ChatServerInterface
 				}
 				catch (RemoteException e)
 				{
-					//Q5
-					// remove the client from the list of registered clients (fault tolerance)
-					if (registeredClients.contains(client))
-					{
-						registeredClients.remove(client);
-					}
-					else
-					{
-						System.out.println("error: can not send message to client " + client);
-						e.printStackTrace();
-					}
+					iterator.remove();;
+					System.out.println("error: can not send message to client, removing him from list " + client);
 				}
 			}
+			System.out.println("Length after :  "+ registeredClients.size());
 		}
 
 	/**
