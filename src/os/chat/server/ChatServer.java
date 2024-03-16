@@ -63,11 +63,10 @@ public class ChatServer implements ChatServerInterface
 	 */
 	public void publish(String message, String publisher)
 		{
-			//Q3
+			//Q3,Q5
 			// method to send the message to all registered clients
-			System.out.println("Length before :  "+ registeredClients.size());
 
-			//Q5
+			// use iterator to avoid concurrency problems (because we are modifying the list while iterating over it)
 			Iterator<CommandsFromServer> iterator = registeredClients.iterator();
 			while(iterator.hasNext()){
 				CommandsFromServer client = iterator.next();
@@ -82,7 +81,6 @@ public class ChatServer implements ChatServerInterface
 					System.out.println("error: can not send message to client, removing him from list " + client);
 				}
 			}
-			System.out.println("Length after :  "+ registeredClients.size());
 		}
 
 	/**
