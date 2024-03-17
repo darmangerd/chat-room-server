@@ -61,7 +61,7 @@ public class ChatServerManager implements ChatServerManagerInterface
 			}
 		catch (RemoteException e)
 			{
-			System.out.println("can not export the object");
+			System.out.println("(RemoteException) Cannot create the chat server manager");
 			e.printStackTrace();
 			}
 		System.out.println("ChatServerManager was created");
@@ -116,7 +116,7 @@ public class ChatServerManager implements ChatServerManagerInterface
 				chatRoomsList.add(roomName);
 				return true;
 			} catch (Exception e) {
-				System.out.println("can not create new room");
+				System.out.println("(Exception) Cannot create a new room");
 				e.printStackTrace();
 				return false;
 			}
@@ -132,7 +132,7 @@ public class ChatServerManager implements ChatServerManagerInterface
 			}
 		catch (RemoteException e)
 			{
-			System.out.println("error: can not create registry");
+			System.out.println("(RemoteException) Cannot create registry");
 			e.printStackTrace();
 			}
 		System.out.println("registry was created");

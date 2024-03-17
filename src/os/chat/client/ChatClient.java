@@ -62,13 +62,13 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
             csm = (ChatServerManagerInterface) registry.lookup("ChatServerManager");
 
         } catch (RemoteException e) {
-            System.out.println("can not locate registry");
+            System.out.println("(RemoteException) Cannot create the chat client");
             e.printStackTrace();
         } catch (NotBoundException e) {
-            System.out.println("can not lookup for ChatServerManager");
+            System.out.println("(NotBoundException) Cannot create the chat client");
             e.printStackTrace();
         } catch (Exception e) {
-            System.out.println("can not get local ip");
+            System.out.println("(Exception) Cannot create the chat client");
             e.printStackTrace();
         }
     }
@@ -93,7 +93,7 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
             // we call the publish method of the server
             myRooms.get(roomName).publish(message, userName);
         } catch (RemoteException e) {
-            System.out.println("can not call ChatServerInterface.publish()");
+            System.out.println("(RemoteException) Cannot send the text");
             e.printStackTrace();
         }
     }
@@ -114,7 +114,7 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
             return csm.getRoomsList();
         }
         catch (RemoteException e) {
-            System.out.println("can not call ChatServerManager.getRoomsList()");
+            System.out.println("(RemoteException) Cannot get the chat rooms list");
             e.printStackTrace();
             return null;
         }
@@ -136,10 +136,10 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
             myRooms.get(roomName).register(skeleton);
             return true;
         } catch (NotBoundException e) {
-            System.out.println("can not lookup for room");
+            System.out.println("(NotBoundException) Cannot join the chat room");
             e.printStackTrace();
         } catch (RemoteException e) {
-            System.out.println("can not call ChatServerInterface.register()");
+            System.out.println("(RemoteException) Cannot join the chat room");
             e.printStackTrace();
         }
         return false;
@@ -163,10 +163,10 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
             chatServer.unregister(skeleton);
             return true;
         } catch (NotBoundException e) {
-            System.out.println("Cannot lookup for room");
+            System.out.println("(NotBoundException) Cannot leave the chat room");
             e.printStackTrace();
         } catch (RemoteException e) {
-            System.err.println("Error occurred while leaving chat room: " + e.getMessage());
+            System.err.println("(RemoteException) Cannot leave the chat room");
             e.printStackTrace();
         }
         return false;
@@ -193,11 +193,11 @@ public class ChatClient implements CommandsFromWindow, CommandsFromServer {
                 return true;
             }
         } catch (RemoteException e) {
-            System.out.println("can not call ChatServerManagerInterface.createRoom()");
+            System.out.println("(RemoteException) Cannot create a new room");
             e.printStackTrace();
         }
         catch (NotBoundException e) {
-            System.out.println("can not lookup for room");
+            System.out.println("(NotBoundException) Cannot create a new room");
             e.printStackTrace();
         }
         return false;

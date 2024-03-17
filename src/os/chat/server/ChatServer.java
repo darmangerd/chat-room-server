@@ -47,9 +47,9 @@ public class ChatServer implements ChatServerInterface
 
 				registry.rebind("room_" + roomName, skeleton);
 			}
-		catch (Exception e)
+		catch (RemoteException e)
 			{
-			System.out.println("error: can not bind ChatServer to the RMI registry");
+			System.out.println("(RemoteException) Cannot create the chat server");
 			e.printStackTrace();
 			}
 		}
@@ -73,12 +73,12 @@ public class ChatServer implements ChatServerInterface
 				try
 				{
 					client.receiveMsg(roomName, publisher + ": " + message);
-					System.out.println("  [server] publishing '" + message + "' from '" + publisher + "'");
+					System.out.println("publishing '" + message + "' from '" + publisher + "'");
 				}
 				catch (RemoteException e)
 				{
 					iterator.remove();;
-					System.out.println("error: can not send message to client, removing him from list " + client);
+					System.out.println("(RemoteException) Cannot send message to client");
 				}
 			}
 		}

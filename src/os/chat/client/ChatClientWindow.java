@@ -103,7 +103,7 @@ public class ChatClientWindow implements CommandsToWindow {
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			System.out.println("Error creating the ChatClient object");
+			System.out.println("(Exception) Cannot create the chat client window");
 		}
 				
 		System.out.println("Initializing the ChatClient Window ...");
